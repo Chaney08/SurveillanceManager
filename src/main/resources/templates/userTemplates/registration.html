@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link href="/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+         <link href="/js/bootstrap.min.js" type="text/javascript" />
+        <title>Registration</title>
+    </head>
+    <body>
+        <th:block th:include="/_menu"></th:block>
+        <div class="container">
+            <div class="card bg-light">
+                <article class="card-body mx-auto" style="max-width: 400px;">
+                    <h4 class="card-title mt-3 text-center">Create Account</h4>
+                    <p class="text-center">Get started managing your account</p>
+
+                    <div th:if="${param.success}">
+                        <div class="alert alert-info">You've successfully registered! You can now login as normal</div>
+                    </div>
+
+                    <form th:action="@{/registration}" method='POST' th:object="${userRegistration}">
+                    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}"
+                           th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation
+                            error</div>
+
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                             </div>
+                            <div><input name="userName" class="form-control" th:field="*{userName}" placeholder="User name" type="text" /></div>
+                            <div class="alert alert-danger " th:each="error: ${#fields.errors('userName')}" th:text="${error}"></div>
+                        </div>
+
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                             </div>
+                            <div><input name="fullName" class="form-control " th:field="*{fullName}" placeholder="Full name" type="text" /></div>
+                            <div class="alert alert-danger" th:each="error: ${#fields.errors('fullName')}" th:text="${error}"></div>
+                        </div>
+
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                            </div>
+                            <div><input class="form-control" placeholder="Create password" th:field="*{password}" type="password"></div>
+                            <div class="alert alert-danger" th:each="error : ${#fields.errors('password')}" th:text="${error}"></div>
+                        </div>
+
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="admin" id="admin">
+                          <label class="form-check-label" for="admin">
+                            Admin user
+                          </label>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block"> Create Account  </button>
+                        </div>
+
+                        <p class="text-center">Have an account? <a href="/login">Log In</a> </p>
+                    </form>
+                </article>
+            </div>
+        </div>
+    </body>
+</html>

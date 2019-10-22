@@ -1,0 +1,3 @@
+.trHeader{ background:#F1F3F0 !important; }
+tr:nth-child(odd)    { background:#AEC5E8; }
+tr:nth-child(even)    { background:#F1F3F0; }

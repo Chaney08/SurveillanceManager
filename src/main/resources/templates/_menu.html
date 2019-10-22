@@ -1,0 +1,15 @@
+<nav class="navbar navbar-expand-sm bg-light list-inline justify-content-center" >
+    <ul class="navbar-nav " >
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/schedule/scheduleDashboard}">Home</a>
+        </li>
+
+        <li class="nav-item">
+             <a class="nav-link" th:if="${#request.userPrincipal != null}" th:href="@{/schedule/scheduleRegistration}">Register Schedule</a>
+        </li>
+
+        <li class="nav-item">
+             <a class="nav-link" th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a>
+        </li>
+    </ul>
+</nav>

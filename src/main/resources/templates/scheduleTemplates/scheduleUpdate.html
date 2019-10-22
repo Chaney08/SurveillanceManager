@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+
+        <th:block th:include="/_linkImports"></th:block>
+        <th:block th:include="/_menu"></th:block>
+        <title>Schedule Registration</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="card bg-light">
+                <article class="card-body mx-auto" style="max-width: 400px;">
+                    <h4 class="card-title mt-3 text-center">Update your schedule details</h4>
+                    <p class="text-center">Please edit your details below</p>
+
+                    <form th:action="@{/schedule/scheduleUpdate}" method='POST' th:object="${scheduleUpdate}" >
+                        <input type="hidden" name="ID" th:field="*{scheduleId}">
+                        <p class="error-message" th:if="${#fields.hasGlobalErrors()}"
+                               th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation
+                            error</p>
+
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                             </div>
+                            <div><input name="scheduleName" th:field="*{scheduleName}" class="form-control" placeholder="Schedule name" type="text"></div>
+                            <div class="alert alert-danger " th:each="error: ${#fields.errors('scheduleName')}" th:text="${error}"></div>
+                        </div>
+
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                             </div>
+                            <div><input name="description" th:field="*{description}" class="form-control" placeholder="Schedule Description" type="text"></div>
+                            <div class="alert alert-danger " th:each="error: ${#fields.errors('description')}" th:text="${error}"></div>
+                        </div>
+
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                             </div>
+                            <div>
+                                <input id="dp1" name="fromDate" th:field="*{fromDate}" autocomplete="off" class="form-control" placeholder="Schedule start" type="text">
+                            </div>
+                            <div class="alert alert-danger " th:each="error: ${#fields.errors('fromDate')}" th:text="${error}"></div>
+                        </div>
+
+                        <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                             </div>
+                            <div><input id="dp2" name="toDate" th:field="*{toDate}" autocomplete="off" class="form-control" placeholder="Schedule end" type="text"></div>
+                            <div class="alert alert-danger " th:each="error: ${#fields.errors('toDate')}" th:text="${error}"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block"> Update schedule  </button>
+                        </div>
+                    </form>
+                </article>
+            </div>
+        </div>
+    </body>
+</html>

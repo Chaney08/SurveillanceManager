@@ -1,0 +1,38 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Dashboard</title>
+         <th:block th:include="/_linkImports"></th:block>
+    </head>
+    <body>
+    <th:block th:include="/_menu"></th:block>
+        <div class="container">
+            <div class="row">
+                <div class="table-responsive table-bordered movie-table">
+                    <table class="table">
+                      <thead>
+                          <tr class="trHeader">
+                              <th>Schedule Name</th>
+                              <th>Description</th>
+                              <th>Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                      <tr th:if="${schedules.empty}">
+                          <td colspan="4"> No Schedules Available </td>
+                      </tr>
+                      <tr th:each="schedule : ${schedules}">
+                          <td><span th:text="${schedule.scheduleName}"> Name </span></td>
+                          <td><span th:text="${schedule.description}"> Description</span></td>
+                          <td>
+                             <a th:href="@{/schedule/scheduleUpdate(scheduleId=${schedule.scheduleId})}" class="btn btn-primary a-btn-slide-text"><span class="glyphicon glyphicon-edit"></span><span><strong>Edit</strong></span></a>
+                             <a th:href="@{/schedule/deleteSchedule(scheduleId=${schedule.scheduleId})}" class="btn btn-primary a-btn-slide-text"><span class="glyphicon glyphicon-remove"></span><span><strong>Delete</strong></span></a>
+                             <a th:href="@{/schedule/viewSchedule(scheduleId=${schedule.scheduleId})}" class="btn btn-primary a-btn-slide-text"><span class="glyphicon glyphicon-edit"></span><span><strong>View calendar</strong></span></a>
+                          </td>
+                       </tr>
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
