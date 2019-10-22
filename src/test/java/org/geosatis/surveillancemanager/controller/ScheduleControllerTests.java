@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -32,13 +33,9 @@ public class ScheduleControllerTests {
 
     @Test
     public void scheduleRegistration() {
-        Date fromDate = new Date();
-        Date toDate = new Date();
         Schedule schedule = new Schedule();
         schedule.setScheduleName("TestRegistration");
         schedule.setDescription("This is a description");
-        schedule.setFromDate(fromDate);
-        schedule.setFromDate(toDate);
         scheduleRepo.save(schedule);
 
         //The save is done already so we just need to verify it worked

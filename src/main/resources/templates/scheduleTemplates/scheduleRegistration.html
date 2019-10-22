@@ -39,17 +39,17 @@
                                 <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
                              </div>
                             <div>
-                                <input id="dp1" name="fromDate" th:field="*{fromDate}" autocomplete="off" class="form-control" placeholder="Schedule start" type="text">
+                                <input id="dp1" name="startDate" th:field="*{startDate}" autocomplete="off" class="form-control" placeholder="Schedule start" type="text">
                             </div>
-                            <div class="alert alert-danger " th:each="error: ${#fields.errors('fromDate')}" th:text="${error}"></div>
+                            <div class="alert alert-danger " th:each="error: ${#fields.errors('startDate')}" th:text="${error}"></div>
                         </div>
 
                         <div class="form-group input-group">
                                 <div class="input-group-prepend">
                                 <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
                              </div>
-                            <div><input id="dp2" name="toDate" th:field="*{toDate}" autocomplete="off" class="form-control" placeholder="Schedule end" type="text"></div>
-                            <div class="alert alert-danger " th:each="error: ${#fields.errors('toDate')}" th:text="${error}"></div>
+                            <div><input id="dp2" name="endDate" th:field="*{endDate}" autocomplete="off" class="form-control" placeholder="Schedule end" type="text"></div>
+                            <div class="alert alert-danger " th:each="error: ${#fields.errors('endDate')}" th:text="${error}"></div>
                         </div>
 
                         <div class="form-group">

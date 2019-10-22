@@ -6,8 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "schedule")
@@ -24,11 +24,12 @@ public class Schedule {
     private String description;
     //Dates require NotNull as NotBlank ios for Strings only
     @DateTimeFormat(pattern = "MM/dd/yyyy")
-    @NotNull(message= "To date is mandatory")
-    private Date toDate;
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
     @NotNull(message= "From date is mandatory")
-    private Date fromDate;
+    private LocalDate startDate;
+    @DateTimeFormat(pattern = "MM/dd/yyyy")
+    @NotNull(message= "To date is mandatory")
+    private LocalDate endDate;
+
 
     @CreationTimestamp
     private LocalDateTime createDateTime;
@@ -70,20 +71,20 @@ public class Schedule {
         this.user = user;
     }
 
-    public Date getToDate() {
-        return toDate;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setToDate(Date toDate) {
-        this.toDate = toDate;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
-    public Date getFromDate() {
-        return fromDate;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setFromDate(Date fromDate) {
-        this.fromDate = fromDate;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     @Override
@@ -92,8 +93,8 @@ public class Schedule {
                 "scheduleId=" + scheduleId +
                 ", scheduleName='" + scheduleName + '\'' +
                 ", description='" + description + '\'' +
-                ", toDate=" + toDate +
-                ", fromDate=" + fromDate +
+                ", endDate=" + endDate +
+                ", startDate=" + startDate +
                 ", createDateTime=" + createDateTime +
                 ", user=" + user +
                 '}';

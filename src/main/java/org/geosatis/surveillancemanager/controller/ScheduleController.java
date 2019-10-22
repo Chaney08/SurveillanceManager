@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(path="/schedule")
@@ -86,7 +89,15 @@ public class ScheduleController {
     @GetMapping(value = "/viewSchedule")
     public String viewSchedule(Model model,@RequestParam(name="scheduleId") int idForViewing) {
         Schedule schedule = scheduleRepo.findScheduleByScheduleId(idForViewing);
-        model.addAttribute("scheduleView", schedule);
+
+        LocalDate startDate = schedule.getStartDate();
+        //We add 1 extra day here as datesUntl excludes last day
+        LocalDate endDate = schedule.getEndDate().plusDays(1);
+
+        List<LocalDate> dateList = startDate.datesUntil(endDate)
+                .collect(Collectors.toList());
+
+        model.addAttribute("monitoredDates", dateList);
         return "scheduleTemplates/scheduleView";
     }
 
