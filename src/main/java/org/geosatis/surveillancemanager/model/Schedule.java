@@ -1,5 +1,7 @@
 package org.geosatis.surveillancemanager.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -40,10 +42,12 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name="userId")
+    @JsonManagedReference
     private User user;
 
     @OneToMany(mappedBy="schedule")
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonBackReference
     private List<ScheduleExcemption> scheduleExcemptions;
 
     public Schedule(){}

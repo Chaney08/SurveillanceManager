@@ -1,18 +1,19 @@
 package org.geosatis.surveillancemanager.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.geosatis.surveillancemanager.model.Schedule;
-import org.geosatis.surveillancemanager.model.User;
 import org.geosatis.surveillancemanager.repository.ScheduleRepository;
 import org.geosatis.surveillancemanager.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,18 +27,15 @@ public class SearchController {
     @Autowired
     private WebUtils webUtils;
 
-    @RequestMapping(value = { "/", "/searchByDate"})
-    public String scheduleDashboard(Model model) {
-
-        return "scheduleTemplates/scheduleDashboard";
-    }
-    @GetMapping(value = "/searchByDate")
-    public String scheduleRegistration(Model model, @RequestParam LocalDate searchDate, @RequestParam String areaName, BindingResult result) {
+    @RequestMapping(value = "/searchByDate",produces = "application/json")
+    @ResponseBody
+    public HashMap<String, String> scheduleRegistration(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate searchDate, @RequestParam String areaName) {
         Schedule schedule = new Schedule();
-        User user = webUtils.getUser();
-        List<Schedule> allSchedules = user.getSchedules();
+        String json = "";
+        ObjectMapper mapper = new ObjectMapper();
+        HashMap<String, String> returnedMap = new HashMap<>();
 
-        if(areaName.isEmpty()){
+        if(!areaName.isEmpty()){
             schedule = scheduleRepo.findByScheduleName(areaName);
 
             if (schedule != null) {
@@ -48,21 +46,20 @@ public class SearchController {
                         .collect(Collectors.toList());
 
                 if(dateList.contains(searchDate)){
-                    model.addAttribute("scheduleSearch", schedule);
-                    return "searchTemplates/scheduleSearch";
+                    returnedMap.put("mustBeConfined", "true");
+                    returnedMap.put("scheduleInformation", schedule.toString());
                 }else{
-                    result.rejectValue("searchDate", null, "That date was not found");
+                    returnedMap.put("mustBeConfined", "false");
+                    returnedMap.put("scheduleInformation",  schedule.toString());
                 }
 
 
             }else{
-                result.rejectValue("areaName", null, "There is no schedule with that name");
+                returnedMap.put("error","There is no schedule with that name on the system");
             }
 
         }
-
-        model.addAttribute("scheduleRegistration", schedule);
-        return "scheduleTemplates/scheduleRegistration";
+        return returnedMap;
     }
 
 }

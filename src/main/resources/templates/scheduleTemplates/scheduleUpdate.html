@@ -3,6 +3,7 @@
     <head>
 
         <th:block th:include="/_linkImports"></th:block>
+        <script src="/js/scheduleChange.js" ></script>
         <th:block th:include="/_menu"></th:block>
         <title>Schedule Registration</title>
     </head>
@@ -51,6 +52,24 @@
                              </div>
                             <div><input id="dp2" name="endDate" th:field="*{endDate}" autocomplete="off" class="form-control" placeholder="Schedule end" type="text"></div>
                             <div class="alert alert-danger " th:each="error: ${#fields.errors('endDate')}" th:text="${error}"></div>
+                        </div>
+
+                        <table class="table" name="excemptionTable" id="excemptionTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Days excempt from the above schedule</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="excemption, rowIndex : *{scheduleExcemptions}">
+                                    <td><input class="datepicker" th:field="*{scheduleExcemptions[__${rowIndex.index}__].excemptionDate}" /></td>
+                                    <!-- <td><a class="btn btn-primary a-btn-slide-text"><span class="glyphicon glyphicon-remove"></span><span><strong>Delete</strong></span></a></td> -->
+                                    <td style="display:none"><input th:field="*{scheduleExcemptions[__${rowIndex.index}__].excemptionId}" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                         <div class="form-group">
+                             <button type="button" id="addExcemptionButton" onclick="addExcemption()" class="btn btn-primary a-btn-slide-text"><span class="glyphicon glyphicon-edit"></span><span><strong>Add Excemption</strong></span></button>
                         </div>
 
                         <div class="form-group">

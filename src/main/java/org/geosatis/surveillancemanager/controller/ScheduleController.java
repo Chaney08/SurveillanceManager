@@ -83,6 +83,7 @@ public class ScheduleController {
     }
 
     @PostMapping(value = "/scheduleUpdate")
+    @Transactional
     public String updateSchedule(@ModelAttribute("scheduleUpdate") @Valid Schedule schedule,
                              BindingResult result) {
 
@@ -91,6 +92,12 @@ public class ScheduleController {
         }else {
             schedule.setUser(webUtils.getUser());
             scheduleRepo.save(schedule);
+
+            //Excemption rows schedule is not automatically set on frontend - So we set here and then save to DB
+            schedule.getScheduleExcemptions().stream().forEach(x-> x.setSchedule(schedule));
+            schedule.getScheduleExcemptions().stream().forEach(x -> scheduleExcemptionRepo.deleteScheduleExcemptionByExcemptionDate(x.getExcemptionDate()));
+            schedule.getScheduleExcemptions().stream().forEach(x -> scheduleExcemptionRepo.save(x));
+
             return "redirect:/schedule/scheduleDashboard";
         }
 

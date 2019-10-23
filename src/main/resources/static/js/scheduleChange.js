@@ -4,6 +4,10 @@ var checkout
 
 $(document).ready(function() {
 
+
+    //Initialising any datepickers that will already be on excemptions list in screen
+    $(".datepick").datepicker({});
+
     let nowTemp = new Date();
     let now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
 
@@ -54,7 +58,7 @@ $(document).ready(function() {
 let addExcemption = function () {
     let listName = 'scheduleExcemptions'; //Name of the exemption list in Schedule.class
     let fieldsNames = ['excemptionDate', 'id']; //field names required by Excemption
-    let rowIndex = document.querySelectorAll('.item').length; //we can add mock class to each movie-row
+    let rowIndex = document.querySelectorAll('.datepicker').length;
 
     let row = document.createElement('div');
     row.classList.add('row', 'item');
@@ -83,15 +87,15 @@ let addExcemption = function () {
         row.appendChild(col);
     });
 
-    //we need to add delete button to end
-    let col = document.createElement('span')
+    //we need to add delete button to end - TODO : running out of time so removing as not implemented yet, implement if time left over
+    /*let col = document.createElement('span')
     let button = document.createElement('button');
     button.classList.add("btn", "btn-primary","a-btn-slide-text");
     button.innerText = "Remove Excemption";
     button.onclick = deleteExcemption(this);
     button.type = "Button";
     col.appendChild(button);
-    row.appendChild(col);
+    row.appendChild(col);*/
 
     
     document.getElementById('excemptionTable').appendChild(row);

@@ -1,5 +1,6 @@
 package org.geosatis.surveillancemanager.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -25,6 +26,7 @@ public class ScheduleExcemption {
 
     @ManyToOne
     @JoinColumn(name="scheduleId")
+    @JsonManagedReference
     private Schedule schedule;
 
     public ScheduleExcemption(){}

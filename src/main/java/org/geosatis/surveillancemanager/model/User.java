@@ -1,5 +1,7 @@
 package org.geosatis.surveillancemanager.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class User {
                     name = "role_id"))
     private List<Role> roles;
     @OneToMany(mappedBy="user")
+    @JsonBackReference
     private List<Schedule> schedules;
 
     public User() {

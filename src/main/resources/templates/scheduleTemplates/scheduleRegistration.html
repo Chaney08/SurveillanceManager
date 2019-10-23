@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <th:block th:include="/_linkImports"></th:block>
-        <script src="/js/scheduleRegistration.js" ></script>
+        <script src="/js/scheduleChange.js" ></script>
         <title>Schedule Registration</title>
     </head>
     <body>
@@ -61,8 +61,8 @@
                             </thead>
                             <tbody>
                                 <tr th:each="excemption, rowIndex : *{scheduleExcemptions}">
-                                    <td><input th:field="*{scheduleExcemptions[__${rowIndex.index}__].excemptionDate}" /></td>
-                                    <td><a th:href="@{/invoice/deleteExcemption(excemptionId=${excemption.excemptionId})}" class="btn btn-primary a-btn-slide-text"><span class="glyphicon glyphicon-remove"></span><span><strong>Delete</strong></span></a></td>
+                                    <td><input class="datepicker" th:field="*{scheduleExcemptions[__${rowIndex.index}__].excemptionDate}" /></td>
+                                    <!-- <td><a class="btn btn-primary a-btn-slide-text"><span class="glyphicon glyphicon-remove"></span><span><strong>Delete</strong></span></a></td> -->
                                     <td style="display:none"><input th:field="*{scheduleExcemptions[__${rowIndex.index}__].excemptionId}" /></td>
                                 </tr>
                             </tbody>
