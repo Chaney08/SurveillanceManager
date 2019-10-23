@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Configurable
+//A small utils class to make getting user easier
 public class WebUtils {
 
     @Autowired

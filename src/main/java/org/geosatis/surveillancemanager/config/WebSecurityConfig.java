@@ -46,7 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().antMatchers("/", "/login", "/logout","/registration").permitAll();
 
-        http.authorizeRequests().antMatchers("/userInfo","/schedule/scheduleRegistration","/schedule/scheduleDashboard","/schedule/deleteSchedule").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");
+        http.authorizeRequests().antMatchers("/userInfo","/schedule/scheduleRegistration","/schedule/scheduleDashboard","/schedule/deleteSchedule","/schedule/viewSchedule")
+                .access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");
 
         // For ADMIN only - We have admin users but no admin only page so no need for this line - Leaving in as we may need admin stuff in future
 //        http.authorizeRequests().antMatchers("/admin").access("hasRole('ROLE_ADMIN')");

@@ -32,9 +32,6 @@ public class ScheduleController {
     @Autowired
     private WebUtils webUtils;
 
-    //Create this schedule here so we can dynamically add to it
-    Schedule schedule = new Schedule();
-
     @RequestMapping(value = { "/", "/scheduleDashboard"})
     public String scheduleDashboard(Model model) {
         //Get the user and load their owned schedules to the page
@@ -44,7 +41,7 @@ public class ScheduleController {
     }
     @GetMapping(value = "/scheduleRegistration")
     public String scheduleRegistration(Model model) {
-        schedule = new Schedule();
+        Schedule schedule = new Schedule();
         model.addAttribute("scheduleRegistration", schedule);
         return "scheduleTemplates/scheduleRegistration";
     }
@@ -80,7 +77,7 @@ public class ScheduleController {
 
     @GetMapping(value = "/scheduleUpdate")
     public String updateSchedule(Model model,@RequestParam(name="scheduleId") int idForEditing) {
-        schedule = scheduleRepo.findScheduleByScheduleId(idForEditing);
+        Schedule schedule = scheduleRepo.findScheduleByScheduleId(idForEditing);
         model.addAttribute("scheduleUpdate", schedule);
         return "scheduleTemplates/scheduleUpdate";
     }
@@ -101,7 +98,7 @@ public class ScheduleController {
 
     @GetMapping(value = "/viewSchedule")
     public String viewSchedule(Model model,@RequestParam(name="scheduleId") int idForViewing) {
-        schedule = scheduleRepo.findScheduleByScheduleId(idForViewing);
+        Schedule schedule = scheduleRepo.findScheduleByScheduleId(idForViewing);
 
         LocalDate startDate = schedule.getStartDate();
         //We add 1 extra day here as datesUntl excludes last day
