@@ -11,21 +11,21 @@
     <div class="container">
         <div class="card bg-light">
             <article class="card-body mx-auto" style="max-width: 400px;">
+            <input type="hidden" id="monitoredDates" th:field="*{monitoredDates}"/>
             <p class="text-center">All days highlighted below are days that the offender needs to be confined to the required area</p>
                 <div>
-                     <div id="dp1"></div>
+                     <div id="displayCalender"></div>
                 </div>
             </article>
         </div>
     </div>
     </body>
 
+    <!-- This is done inline so we can access the date array from Thymelead-->
     <script type="text/javascript" th:inline="javascript">
-        /*<![CDATA[*/
-
        var displayedDates = [];
        var monitoredDates = [[${monitoredDates}]];
-       //This loop is not really required but it makes it safer - I can easily change date format and not worry about everything breaking
+       //This loop is not really required but it makes it safer - I can easily change date format in backend and not worry about everything breaking on frontend
        $.each(monitoredDates, function(k, v){
          var myDate = new Date(v);
          var day = myDate.getDate();
@@ -35,8 +35,6 @@
          console.log(displayDate);
          displayedDates.push(new Date(displayDate));
        });
-       $('#dp1').datepicker('setDates', displayedDates)
-
-        /*]]>*/
+       $('#displayCalender').datepicker('setDates', displayedDates);
     </script>
 </html>

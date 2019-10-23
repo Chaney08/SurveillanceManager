@@ -1,6 +1,8 @@
 package org.geosatis.surveillancemanager.model;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "schedule")
@@ -22,7 +26,7 @@ public class Schedule {
     private String scheduleName;
     @NotBlank(message = "Description is mandatory")
     private String description;
-    //Dates require NotNull as NotBlank ios for Strings only
+    //Dates require NotNull as NotBlank is for Strings only
     @DateTimeFormat(pattern = "MM/dd/yyyy")
     @NotNull(message= "From date is mandatory")
     private LocalDate startDate;
@@ -38,6 +42,19 @@ public class Schedule {
     @JoinColumn(name="userId")
     private User user;
 
+    @OneToMany(mappedBy="schedule")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<ScheduleExcemption> scheduleExcemptions;
+
+    public Schedule(){}
+
+
+    public void addInvoiceRow(ScheduleExcemption newExcemption) {
+        if(scheduleExcemptions == null){
+            scheduleExcemptions = new ArrayList<>();
+        }
+        this.scheduleExcemptions.add(newExcemption);
+    }
 
     public Long getScheduleId() {
         return scheduleId;
@@ -85,6 +102,14 @@ public class Schedule {
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public List<ScheduleExcemption> getScheduleExcemptions() {
+        return scheduleExcemptions;
+    }
+
+    public void setScheduleExcemptions(List<ScheduleExcemption> scheduleExcemptions) {
+        this.scheduleExcemptions = scheduleExcemptions;
     }
 
     @Override

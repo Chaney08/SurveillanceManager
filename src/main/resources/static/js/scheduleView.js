@@ -1,9 +1,6 @@
 $(document).ready(function() {
-
-    var inRange = false;
-    $('#dp1').datepicker({
-        multidate: true,
+    $('#displayCalender').datepicker({
+        beforeShow: function(i) { if ($(i).attr('readonly')) { return false; } },
         todayHighlight: true,
-        minDate: 0,
     });
 });

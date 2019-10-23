@@ -15,18 +15,18 @@ import java.util.stream.Stream;
 @SpringBootApplication
 @ComponentScan(basePackages={"org.geosatis.surveillancemanager.controller", "org.geosatis.surveillancemanager.config", "org.geosatis.surveillancemanager.service", "org.geosatis.surveillancemanager.repository"
         , "org.geosatis.surveillancemanager.utils"})
-public class DemoprojectApplication {
+public class ScheduleManagerApplication {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoprojectApplication.class, args);
+        SpringApplication.run(ScheduleManagerApplication.class, args);
     }
 
     //This just creates base users for testing, add as many users as required to array
-   /* @Bean
+    /*@Bean
     CommandLineRunner init(UserRepository userRepository) {
         return args -> {
             Stream.of("user1").forEach(name -> {
