@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
 
-        http.authorizeRequests().antMatchers("/", "/login", "/logout","/registration","/search/searchByDate").permitAll();
+        http.authorizeRequests().antMatchers("/", "/login", "/logout","/registration","/search/searchByDate","scheduleAPI/addingSchedule").permitAll();
 
         http.authorizeRequests().antMatchers("/userInfo","/schedule/scheduleRegistration","/schedule/scheduleDashboard","/schedule/deleteSchedule","/schedule/viewSchedule")
                 .access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')");

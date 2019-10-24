@@ -11,6 +11,7 @@ import org.geosatis.surveillancemanager.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,15 +37,17 @@ public class ScheduleAPIController {
     private WebUtils webUtils;
 
 
+    //TODO : This method used to return a Hashmap containing an object of Schedules like the other 2 methods however I was having Jackson parsing issues on the testing
+    //part of the code so as a compromise I changed this methods returns to show working tests for endpoints
     //TODO: Having issues with passing in full objects to Controller - Not sure why as all examples I have seen work, not enough time to fix so going for messier but simpler option - Fix if possible
     @PostMapping(value = "/addingSchedule",produces = "application/json")
     @ResponseBody
-    public HashMap<String,Object> addScheduleViaAPI(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-                                      @RequestParam String areaName,@RequestParam String userName,
-                                      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) List<LocalDate> excemptionDates){
+    public ResponseEntity<HashMap<String,String>> addScheduleViaAPI(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                                                    @RequestParam String areaName, @RequestParam String userName,
+                                                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) List<LocalDate> excemptionDates){
 
-        HashMap<String,Object> returnedValue = new HashMap<String,Object>();
+        HashMap<String,String> returnedValue = new HashMap<String,String>();
 
         Schedule schedule = new Schedule();
         schedule.setScheduleName(areaName);
@@ -52,9 +55,11 @@ public class ScheduleAPIController {
         Schedule existing = scheduleRepo.findByScheduleName(areaName);
         if (existing != null) {
             returnedValue.put("Error","A schedule with this name already exists, please change the name");
+            return ResponseEntity.status(400).body(returnedValue);
         }
         else if(startDate.isAfter(endDate) || startDate.isEqual(endDate)){
             returnedValue.put("Error","Please ensure the End date is after the start date");
+            return ResponseEntity.status(400).body(returnedValue);
         }else {
             User user = webUtils.getUser(userName);
             if(user != null){
@@ -67,18 +72,19 @@ public class ScheduleAPIController {
 
                 saveExcemptions(schedule,excemptionDates);
 
-                returnedValue.put("Success", schedule);
+                returnedValue.put("Success", schedule.getScheduleName());
             }else{
                 returnedValue.put("Error","That user does not exist");
+                return ResponseEntity.status(400).body(returnedValue);
             }
         }
-        return returnedValue;
+        return ResponseEntity.ok().body(returnedValue);
 
     }
 
     @PostMapping(value = "/updateSchedule",produces = "application/json")
     @ResponseBody
-    public HashMap<String,Object> updateSchedule(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+    public ResponseEntity<HashMap<String,Object>> updateSchedule(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
                                                  @RequestParam String areaName,
                                                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) List<LocalDate> excemptionDates){
@@ -87,6 +93,7 @@ public class ScheduleAPIController {
         //Only check the end date as I would think you can update an ongoing schedule, for example, if the confinement has been extended.
         if(endDate.isBefore(LocalDateTime.now())){
             returnedValue.put("Error","Cannot update schedules in the past");
+            return ResponseEntity.status(400).body(returnedValue);
         }else{
             Schedule existing = scheduleRepo.findByScheduleName(areaName);
             if (existing != null) {
@@ -99,11 +106,12 @@ public class ScheduleAPIController {
 
             }else{
                 returnedValue.put("Error","This schedule does not exist, please create it before updating it");
+                return ResponseEntity.status(400).body(returnedValue);
             }
 
         }
 
-        return returnedValue;
+        return ResponseEntity.ok().body(returnedValue);
     }
 
     @PostMapping(value = "/restApiAddRepeatingSchedule",produces = "application/json")

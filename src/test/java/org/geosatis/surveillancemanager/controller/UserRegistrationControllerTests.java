@@ -36,7 +36,7 @@ public class UserRegistrationControllerTests {
         userRepo.save(user);
     }
     @Test
-    public void scheduleRegistration() {
+    public void testUserSave() {
 
         //The save is done already so we just need to verify it worked
         User user2 = userRepo.findByUserName("Paul");

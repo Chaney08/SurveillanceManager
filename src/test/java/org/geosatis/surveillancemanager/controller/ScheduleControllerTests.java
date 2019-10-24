@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -36,6 +37,8 @@ public class ScheduleControllerTests {
         Schedule schedule = new Schedule();
         schedule.setScheduleName("TestRegistration");
         schedule.setDescription("This is a description");
+        schedule.setStartDate(LocalDateTime.now());
+        schedule.setEndDate(LocalDateTime.now());
         scheduleRepo.save(schedule);
 
         //The save is done already so we just need to verify it worked
@@ -47,6 +50,9 @@ public class ScheduleControllerTests {
         Schedule schedule = new Schedule();
         schedule.setScheduleName("TestDeletion");
         schedule.setDescription("This is a description");
+        schedule.setStartDate(LocalDateTime.now());
+        schedule.setEndDate(LocalDateTime.now());
+
         scheduleRepo.save(schedule);
         scheduleRepo.deleteScheduleByScheduleId(schedule.getScheduleId());
         assertNull(scheduleRepo.findByScheduleName("TestDeletion"));
@@ -56,6 +62,9 @@ public class ScheduleControllerTests {
         Schedule schedule = new Schedule();
         schedule.setScheduleName("TestUpdate");
         schedule.setDescription("This is a description");
+        schedule.setStartDate(LocalDateTime.now());
+        schedule.setEndDate(LocalDateTime.now());
+
         scheduleRepo.save(schedule);
 
         Schedule schedule2 = scheduleRepo.findByScheduleName("TestUpdate");

@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 //This test class tests that all pages are loaded when required
 public class MainControllerWebTests {
-    //Although no mock objects to inject here I want to keep all test pages to a similar format - Could just have put mainController = new MainController() instead of injectmocks.
+
     @InjectMocks
     private MainController mainController;
     private MockMvc mockMvc;

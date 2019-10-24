@@ -9,8 +9,6 @@ $(document).ready(function() {
     let endDate = $('#endDate').val();
     $('#dp1').val(startDate);
     $('#endDateTimePicker').val(endDate);
-    console.log(startDate);
-    console.log(endDate);
 
     //Initialising any datepickers that will already be on excemptions list in screen
     $(".datepick").datepicker({});
@@ -126,8 +124,6 @@ let addExcemption = function () {
     //We create the datepicker on newly generated elements and ensure that the only avalable dates are between the start and end date selected already
     $(".datepick").datepicker({
         beforeShowDay: function(date) {
-            console.log(checkin.data("datetimepicker").getDate().valueOf());
-            console.log( checkout.data("datetimepicker").getDate().valueOf());
             return date.valueOf() > checkin.data("datetimepicker").getDate().valueOf() && date.valueOf() < checkout.data("datetimepicker").getDate().valueOf();
         },
     }).on('changeDate', function(ev) {
@@ -135,7 +131,6 @@ let addExcemption = function () {
         let isoDate = new Date(ev.date);
         isoDate.setHours(isoDate.getHours() + 2);
         isoDate = isoDate.toISOString();
-        console.log(this.id);
         $('#endDate').val(isoDate);
     });;
 };
