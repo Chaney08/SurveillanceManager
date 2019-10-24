@@ -26,7 +26,7 @@ public class ScheduleManagerApplication {
     }
 
     //This just creates base users for testing, add as many users as required to array
-   /* @Bean
+    @Bean
     CommandLineRunner init(UserRepository userRepository) {
         return args -> {
             Stream.of("user1").forEach(name -> {
@@ -35,5 +35,5 @@ public class ScheduleManagerApplication {
             });
             userRepository.findAll().forEach(System.out::println);
         };
-    }*/
+    }
 }

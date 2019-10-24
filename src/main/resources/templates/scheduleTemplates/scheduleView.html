@@ -32,7 +32,6 @@
          var month = myDate.getMonth();
          var year = myDate.getFullYear();
          var displayDate = [parseInt(year), parseInt(month), parseInt(day)];
-         console.log(displayDate);
          displayedDates.push(new Date(displayDate));
        });
        $('#displayCalender').datepicker('setDates', displayedDates);

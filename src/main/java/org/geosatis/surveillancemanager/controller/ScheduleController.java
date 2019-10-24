@@ -75,6 +75,9 @@ public class ScheduleController {
     @Transactional
     @RequestMapping(value = "/deleteSchedule", method = RequestMethod.GET)
     public String deleteSchedule(@RequestParam(name="scheduleId") long idForDeletion) {
+        Schedule schedule = scheduleRepo.findScheduleByScheduleId(idForDeletion);
+        //Need to delete all the excemtions before deleting Schedule, not sure why this is not done automatically but not enough time to find out
+        scheduleExcemptionRepo.deleteScheduleExcemptionBySchedule(schedule);
         scheduleRepo.deleteScheduleByScheduleId(idForDeletion);
         return "redirect:/schedule/scheduleDashboard";
     }

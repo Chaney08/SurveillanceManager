@@ -10,7 +10,6 @@ import org.geosatis.surveillancemanager.repository.ScheduleRepository;
 import org.geosatis.surveillancemanager.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,6 @@ import java.util.List;
 @Controller
 @RequestMapping(path="/scheduleAPI")
 public class ScheduleAPIController {
-
 
     @Autowired
     private ScheduleRepository scheduleRepo;
@@ -49,9 +47,6 @@ public class ScheduleAPIController {
 
         HashMap<String,String> returnedValue = new HashMap<String,String>();
 
-        Schedule schedule = new Schedule();
-        schedule.setScheduleName(areaName);
-
         Schedule existing = scheduleRepo.findByScheduleName(areaName);
         if (existing != null) {
             returnedValue.put("Error","A schedule with this name already exists, please change the name");
@@ -63,15 +58,11 @@ public class ScheduleAPIController {
         }else {
             User user = webUtils.getUser(userName);
             if(user != null){
-                schedule.setUser(user);
-                schedule.setStartDate(startDate);
-                schedule.setEndDate(endDate);
-
+                Schedule schedule = new Schedule(areaName,startDate,endDate);
                 schedule.setUser(user);
                 scheduleRepo.save(schedule);
 
                 saveExcemptions(schedule,excemptionDates);
-
                 returnedValue.put("Success", schedule.getScheduleName());
             }else{
                 returnedValue.put("Error","That user does not exist");
@@ -79,7 +70,6 @@ public class ScheduleAPIController {
             }
         }
         return ResponseEntity.ok().body(returnedValue);
-
     }
 
     @PostMapping(value = "/updateSchedule",produces = "application/json")
@@ -108,9 +98,7 @@ public class ScheduleAPIController {
                 returnedValue.put("Error","This schedule does not exist, please create it before updating it");
                 return ResponseEntity.status(400).body(returnedValue);
             }
-
         }
-
         return ResponseEntity.ok().body(returnedValue);
     }
 
@@ -128,10 +116,7 @@ public class ScheduleAPIController {
             return returnedValue;
         }
         //Set details of Schedule and save
-        Schedule schedule = new Schedule();
-        schedule.setScheduleName(areaName);
-        schedule.setStartDate(LocalDateTime.now());
-        schedule.setEndDate(LocalDateTime.now());
+        Schedule schedule = new Schedule(areaName,LocalDateTime.now(),LocalDateTime.now());
         User user = webUtils.getUser(userName);
 
         if(user != null) {

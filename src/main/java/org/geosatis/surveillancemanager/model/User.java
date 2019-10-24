@@ -97,6 +97,8 @@ public class User {
         this.schedules = schedules;
     }
 
+
+
     @Override
     public String toString() {
         return this.userName + "/" + this.fullName;

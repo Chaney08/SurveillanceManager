@@ -53,15 +53,12 @@ public class Schedule {
     @JsonBackReference(value="repeating")
     private RepeatingSchedule repeatingSchedule;
 
-
-
     public Schedule(){}
 
-    public void addInvoiceRow(ScheduleExcemption newExcemption) {
-        if(scheduleExcemptions == null){
-            scheduleExcemptions = new ArrayList<>();
-        }
-        this.scheduleExcemptions.add(newExcemption);
+    public Schedule(String areaName,LocalDateTime startDate, LocalDateTime endDate){
+        this.scheduleName = areaName;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Long getScheduleId() {
