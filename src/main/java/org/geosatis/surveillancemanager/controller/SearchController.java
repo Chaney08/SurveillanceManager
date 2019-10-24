@@ -40,46 +40,52 @@ public class SearchController {
             Schedule schedule = scheduleRepo.findByScheduleName(areaName);
 
             if (schedule != null) {
-                //TODO : Move the excemption check here so we do not proceed if it falls on excemption - No time to do it, try in morning before sending email.
-                //We are now working with a repeating schedule so we need to look at the repeat schedule information
-                if(schedule.getRepeatingSchedule() != null){
-                    //I like seperating into individual variables, although it takes more lines of code, I think it makes it easier to read what is going on
-                    RepeatingSchedule repeatingSchedule = schedule.getRepeatingSchedule();
-                    LocalTime searchTime = searchDate.toLocalTime();
-                    LocalTime startRepeatingTime = repeatingSchedule.getScheduleStartTime();
-                    LocalTime endRepeatingTime = repeatingSchedule.getScheduleEndTime();
+                LocalDate startDate = schedule.getStartDate().toLocalDate();
+                //We add 1 extra day here as datesUntl excludes last day
+                LocalDate endDate = schedule.getEndDate().toLocalDate().plusDays(1);
+                //Create a list with all days between our 2 dates
+                List<LocalDate> dateList = startDate.datesUntil(endDate)
+                        .collect(Collectors.toList());
 
-                    if(searchTime.isAfter(startRepeatingTime) && searchTime.isBefore(endRepeatingTime)){
-                        String searchedDay = searchDate.getDayOfWeek().toString();
+                List<LocalDate> excemptionDateList = schedule.getScheduleExcemptions().stream()
+                        .map(x -> x.getExcemptionDate())
+                        .collect(Collectors.toList());
 
-                        if(repeatingSchedule.getRepeatingDays().contains(searchedDay)){
-                            mustBeConfined = true;
+                //If our search lands on an excemption, just put mustBeConfined = false as it will be false regardless if its a repeating schedule or not.
+                if(excemptionDateList.contains(searchDate.toLocalDate())){
+                    mustBeConfined = false;
+                }else {
+                    //We are now working with a repeating schedule so we need to look at the repeat schedule information
+                    if (schedule.getRepeatingSchedule() != null) {
+                        //I like seperating into individual variables, although it takes more lines of code, I think it makes it easier to read what is going on
+                        RepeatingSchedule repeatingSchedule = schedule.getRepeatingSchedule();
+                        LocalTime searchTime = searchDate.toLocalTime();
+                        LocalTime startRepeatingTime = repeatingSchedule.getScheduleStartTime();
+                        LocalTime endRepeatingTime = repeatingSchedule.getScheduleEndTime();
+
+                        if (searchTime.isAfter(startRepeatingTime) && searchTime.isBefore(endRepeatingTime)) {
+                            String searchedDay = searchDate.getDayOfWeek().toString();
+
+                            if (repeatingSchedule.getRepeatingDays().contains(searchedDay)) {
+                                mustBeConfined = true;
+                            }
                         }
                     }
-                }
-                //We are not dealing with a repeat schedule and instead dealing with a normal date range
-                else {
-                    LocalDate startDate = schedule.getStartDate().toLocalDate();
-                    //We add 1 extra day here as datesUntl excludes last day
-                    LocalDate endDate = schedule.getEndDate().toLocalDate().plusDays(1);
-                    //Create a list with all days between our 2 dates
-                    List<LocalDate> dateList = startDate.datesUntil(endDate)
-                            .collect(Collectors.toList());
+                    //We are not dealing with a repeat schedule and instead dealing with a normal date range
+                    else {
 
-                    List<LocalDate> excemptionDateList = schedule.getScheduleExcemptions().stream()
-                            .map(x -> x.getExcemptionDate())
-                            .collect(Collectors.toList());
+                        //Remove all of the points where the arrays intersect - In this case we are removing all of the excemptions
+                        //TODO: Dont think this is actually neccessary since I moved the check for excemption date above but not enough time to remove and safely test
+                        List<LocalDate> finalDateList = dateList.stream()
+                                .distinct()
+                                .filter(x -> !excemptionDateList.contains(x))
+                                .collect(Collectors.toList());
 
-                    //Remove all of the points where the arrays intersect - In this case we are removing all of the excemptions
-                    List<LocalDate> finalDateList = dateList.stream()
-                            .distinct()
-                            .filter( x -> !excemptionDateList.contains(x))
-                            .collect(Collectors.toList());
+                        LocalDate findDate = searchDate.toLocalDate();
+                        if (finalDateList.contains(findDate)) {
+                            mustBeConfined = true;
 
-                    LocalDate findDate = searchDate.toLocalDate();
-                    if (finalDateList.contains(findDate)) {
-                        mustBeConfined = true;
-
+                        }
                     }
                 }
             }else{
