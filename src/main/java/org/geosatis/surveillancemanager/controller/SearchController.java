@@ -40,6 +40,7 @@ public class SearchController {
             Schedule schedule = scheduleRepo.findByScheduleName(areaName);
 
             if (schedule != null) {
+                //TODO : Move the excemption check here so we do not proceed if it falls on excemption - No time to do it, try in morning before sending email.
                 //We are now working with a repeating schedule so we need to look at the repeat schedule information
                 if(schedule.getRepeatingSchedule() != null){
                     //I like seperating into individual variables, although it takes more lines of code, I think it makes it easier to read what is going on
