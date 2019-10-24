@@ -4,6 +4,13 @@ var checkout
 
 $(document).ready(function() {
 
+    //Need to load dates into datepicker field on startup since the fields linked to Java are now hidden
+    let startDate = $('#startDate').val();
+    let endDate = $('#endDate').val();
+    $('#dp1').val(startDate);
+    $('#endDateTimePicker').val(endDate);
+    console.log(startDate);
+    console.log(endDate);
 
     //Initialising any datepickers that will already be on excemptions list in screen
     $(".datepick").datepicker({});
@@ -13,9 +20,7 @@ $(document).ready(function() {
 
 
     //Using var for the datepickers for use in adding excemptions
-    checkin = $('#dp1').datepicker({
-
-        dateFormat: 'yyyy-mm-dd',
+    checkin = $('#dp1').datetimepicker({
         beforeShowDay: function(date) {
             return date.valueOf() >= now.valueOf();
         },
@@ -23,28 +28,47 @@ $(document).ready(function() {
 
     }).on('changeDate', function(ev) {
         if (ev.date.valueOf() > checkout.data('date') || !checkout.val()) {
-            var newDate = new Date(ev.date);
+
+            let newDate = new Date(ev.date);
             newDate.setDate(newDate.getDate() + 1);
-            checkout.datepicker("update", newDate);
+            //Update the EndDate to auto fill the day after start date
+            checkout.datetimepicker("update", newDate);
+
+            //Cannot get DateTimePicker into the correct format so I use a hidden field and convert the date value - Also need to increment by 2 to get accurate time, not enough time to be messing with timezones
+            let isoDate = new Date(ev.date);
+            isoDate.setHours(isoDate.getHours() + 2);
+            isoDate = isoDate.toISOString();
+            $('#startDate').val(isoDate);
+
+            if (checkin.val() && checkout.val()) {
+                $('#addExcemptionButton').prop('disabled', false);
+            }
 
         }
-        $('#dp2')[0].focus();
+         $('#endDateTimePicker')[0].focus();
     });
 
 
-    checkout = $('#dp2').datepicker({
-        dateFormat: 'yyyy-mm-dd',
+    checkout = $('#endDateTimePicker').datetimepicker({
         beforeShowDay: function(date) {
             if (!checkin.val()) {
                 return date.valueOf() >= new Date().valueOf();
             } else {
-                $('#addExcemptionButton').prop('disabled', false);
                 return date.valueOf() > checkin.datepicker("getDate").valueOf();
             }
         },
         autoclose: true
 
-    }).on('changeDate', function(ev) {});
+    }).on('changeDate', function(ev) {
+        //Cannot get DateTimePicker into the correct format so I use a hidden field and convert the date value - Also need to increment by 2 to get accurate time, not enough time to be messing with timezones
+        let isoDate = new Date(ev.date);
+        isoDate.setHours(isoDate.getHours() + 2);
+        isoDate = isoDate.toISOString();
+        $('#endDate').val(isoDate);
+        if (checkin.val() && checkout.val()) {
+            $('#addExcemptionButton').prop('disabled', false);
+        }
+    });
 
 
     //We want to disable adding excemptions until the original shcedule is filled as we only want the relevant days available for excemptions
@@ -58,7 +82,7 @@ $(document).ready(function() {
 let addExcemption = function () {
     let listName = 'scheduleExcemptions'; //Name of the exemption list in Schedule.class
     let fieldsNames = ['excemptionDate', 'id']; //field names required by Excemption
-    let rowIndex = document.querySelectorAll('.datepicker').length;
+    let rowIndex = document.querySelectorAll('.datepick').length;
 
     let row = document.createElement('div');
     row.classList.add('row', 'item');
@@ -101,12 +125,19 @@ let addExcemption = function () {
     document.getElementById('excemptionTable').appendChild(row);
     //We create the datepicker on newly generated elements and ensure that the only avalable dates are between the start and end date selected already
     $(".datepick").datepicker({
-        dateFormat: 'yyyy-mm-dd',
         beforeShowDay: function(date) {
-            return date.valueOf() > checkin.datepicker("getDate").valueOf() && date.valueOf() < checkout.datepicker("getDate").valueOf();;
+            console.log(checkin.data("datetimepicker").getDate().valueOf());
+            console.log( checkout.data("datetimepicker").getDate().valueOf());
+            return date.valueOf() > checkin.data("datetimepicker").getDate().valueOf() && date.valueOf() < checkout.data("datetimepicker").getDate().valueOf();
         },
-        autoclose: true
-    });
+    }).on('changeDate', function(ev) {
+        //Cannot get DateTimePicker into the correct format so I use a hidden field and convert the date value - Also need to increment by 2 to get accurate time, not enough time to be messing with timezones
+        let isoDate = new Date(ev.date);
+        isoDate.setHours(isoDate.getHours() + 2);
+        isoDate = isoDate.toISOString();
+        console.log(this.id);
+        $('#endDate').val(isoDate);
+    });;
 };
 
 function deleteExcemption(element){

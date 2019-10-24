@@ -41,7 +41,8 @@
                                 <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
                              </div>
                             <div>
-                                <input id="dp1" name="startDate" th:field="*{startDate}" autocomplete="off" class="form-control" placeholder="Schedule start" type="text">
+                                <input id="dp1" autocomplete="off" class="form-control" placeholder="Schedule start" type="text">
+                                <input id="startDate" name="startDate" th:field="*{startDate}" style="display:none;" class="form-control" placeholder="Schedule start" type="text">
                             </div>
                             <div class="alert alert-danger " th:each="error: ${#fields.errors('startDate')}" th:text="${error}"></div>
                         </div>
@@ -50,7 +51,8 @@
                                 <div class="input-group-prepend">
                                 <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
                              </div>
-                            <div><input id="dp2" name="endDate" th:field="*{endDate}" autocomplete="off" class="form-control" placeholder="Schedule end" type="text"></div>
+                             <div><input id="endDateTimePicker" autocomplete="off" class="form-control" placeholder="Schedule end" type="text"></div>
+                             <input id="endDate" name="endDate" th:field="*{endDate}" style="display:none;" class="form-control" placeholder="Schedule start" type="text">
                             <div class="alert alert-danger " th:each="error: ${#fields.errors('endDate')}" th:text="${error}"></div>
                         </div>
 

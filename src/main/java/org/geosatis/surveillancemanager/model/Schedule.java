@@ -10,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +25,14 @@ public class Schedule {
 
     @NotBlank(message = "Schedule Name is mandatory")
     private String scheduleName;
-    @NotBlank(message = "Description is mandatory")
     private String description;
     //Dates require NotNull as NotBlank is for Strings only
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
-    @NotNull(message= "From date is mandatory")
-    private LocalDate startDate;
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @NotNull(message= "Start date is mandatory")
+    private LocalDateTime startDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @NotNull(message= "To date is mandatory")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
 
 
     @CreationTimestamp
@@ -42,16 +40,22 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name="userId")
-    @JsonManagedReference
+    @JsonManagedReference(value="user")
     private User user;
 
     @OneToMany(mappedBy="schedule")
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonBackReference
+    @JsonBackReference(value="excemption")
     private List<ScheduleExcemption> scheduleExcemptions;
 
-    public Schedule(){}
+    @OneToOne(mappedBy="schedule")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonBackReference(value="repeating")
+    private RepeatingSchedule repeatingSchedule;
 
+
+
+    public Schedule(){}
 
     public void addInvoiceRow(ScheduleExcemption newExcemption) {
         if(scheduleExcemptions == null){
@@ -92,19 +96,19 @@ public class Schedule {
         this.user = user;
     }
 
-    public LocalDate getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 
-    public LocalDate getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
@@ -114,6 +118,14 @@ public class Schedule {
 
     public void setScheduleExcemptions(List<ScheduleExcemption> scheduleExcemptions) {
         this.scheduleExcemptions = scheduleExcemptions;
+    }
+
+    public RepeatingSchedule getRepeatingSchedule() {
+        return repeatingSchedule;
+    }
+
+    public void setRepeatingSchedule(RepeatingSchedule repeatingSchedule) {
+        this.repeatingSchedule = repeatingSchedule;
     }
 
     @Override

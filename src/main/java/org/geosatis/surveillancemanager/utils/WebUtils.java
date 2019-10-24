@@ -20,6 +20,10 @@ public class WebUtils {
         return this.appUserRepo.findByUserName(getUserName());
     }
 
+    public User getUser(String username){
+        return this.appUserRepo.findByUserName(username);
+    }
+
     public String getUserName(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {

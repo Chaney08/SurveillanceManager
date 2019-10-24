@@ -29,7 +29,7 @@ public class User {
                     name = "role_id"))
     private List<Role> roles;
     @OneToMany(mappedBy="user")
-    @JsonBackReference
+    @JsonBackReference(value="user")
     private List<Schedule> schedules;
 
     public User() {

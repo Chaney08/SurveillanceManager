@@ -1,5 +1,6 @@
 package org.geosatis.surveillancemanager.controller;
 
+import org.geosatis.surveillancemanager.model.RepeatingSchedule;
 import org.geosatis.surveillancemanager.model.Schedule;
 import org.geosatis.surveillancemanager.model.ScheduleExcemption;
 import org.geosatis.surveillancemanager.model.User;
@@ -7,6 +8,7 @@ import org.geosatis.surveillancemanager.repository.ScheduleExcemptionRepository;
 import org.geosatis.surveillancemanager.repository.ScheduleRepository;
 import org.geosatis.surveillancemanager.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,9 +63,11 @@ public class ScheduleController {
             schedule.setUser(webUtils.getUser());
             scheduleRepo.save(schedule);
 
-            //Excemption rows schedule is not automatically set on frontend - So we set here and then save to DB
-            schedule.getScheduleExcemptions().stream().forEach(x-> x.setSchedule(schedule));
-            schedule.getScheduleExcemptions().stream().forEach(x -> scheduleExcemptionRepo.save(x));
+            if(schedule.getScheduleExcemptions() != null &&  schedule.getScheduleExcemptions().size() > 0) {
+                //Excemption rows schedule is not automatically set on frontend - So we set here and then save to DB
+                schedule.getScheduleExcemptions().stream().forEach(x -> x.setSchedule(schedule));
+                schedule.getScheduleExcemptions().stream().forEach(x -> scheduleExcemptionRepo.save(x));
+            }
 
             return "redirect:/schedule/scheduleDashboard";
         }
@@ -93,23 +97,28 @@ public class ScheduleController {
             schedule.setUser(webUtils.getUser());
             scheduleRepo.save(schedule);
 
-            //Excemption rows schedule is not automatically set on frontend - So we set here and then save to DB
-            schedule.getScheduleExcemptions().stream().forEach(x-> x.setSchedule(schedule));
-            schedule.getScheduleExcemptions().stream().forEach(x -> scheduleExcemptionRepo.deleteScheduleExcemptionByExcemptionDate(x.getExcemptionDate()));
-            schedule.getScheduleExcemptions().stream().forEach(x -> scheduleExcemptionRepo.save(x));
+            if(schedule.getScheduleExcemptions() != null &&  schedule.getScheduleExcemptions().size() > 0) {
+                //Excemption rows schedule is not automatically set on frontend - So we set here and then save to DB
+                schedule.getScheduleExcemptions().stream().forEach(x -> x.setSchedule(schedule));
+                //Although not implemented on frontend yet - This delete is so we can remove all excemptions on the DB and only save the ones remaining on the frontend - So if the user deletes
+                //an excemption on the frontend this will ensure that the information is persisted as the deletion is only done on form submit and not via an ajax call
+                schedule.getScheduleExcemptions().stream().forEach(x -> scheduleExcemptionRepo.deleteScheduleExcemptionByExcemptionDate(x.getExcemptionDate()));
+                schedule.getScheduleExcemptions().stream().forEach(x -> scheduleExcemptionRepo.save(x));
+            }
 
             return "redirect:/schedule/scheduleDashboard";
         }
 
     }
 
+    //A method for viewing a calendor on the front end that only shows days the schedule is active - Excemptions are excluded
     @GetMapping(value = "/viewSchedule")
     public String viewSchedule(Model model,@RequestParam(name="scheduleId") int idForViewing) {
         Schedule schedule = scheduleRepo.findScheduleByScheduleId(idForViewing);
 
-        LocalDate startDate = schedule.getStartDate();
+        LocalDate startDate = schedule.getStartDate().toLocalDate();
         //We add 1 extra day here as datesUntl excludes last day
-        LocalDate endDate = schedule.getEndDate().plusDays(1);
+        LocalDate endDate = schedule.getEndDate().toLocalDate().plusDays(1);
 
         //We want to return a list of all excemption dates
         List<LocalDate> excemptionDateList = schedule.getScheduleExcemptions().stream()
