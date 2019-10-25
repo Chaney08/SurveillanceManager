@@ -120,4 +120,29 @@ public class ScheduleAPIControllerTests {
                 .andExpect(jsonPath("$.Error").value("Please ensure the End date is after the start date"));
     }
 
+    @Test
+    public void testAddingScheduleBadStartDate() throws Exception {
+
+        doReturn(null).when(scheduleRepo).findByScheduleName(anyString());
+        doReturn(user).when(webUtils).getUser(anyString());
+
+
+        this.mockMvc.perform(post(urlForAddingSchedule)
+                .param("areaName", "TestRegistration").param("userName","user1").param("startDate","2")
+                .param("endDate","2019-09-27T14:50:31"))
+                .andExpect(status().is4xxClientError());
+    }
+    @Test
+    public void testAddingScheduleBadEndDate() throws Exception {
+
+        doReturn(null).when(scheduleRepo).findByScheduleName(anyString());
+        doReturn(user).when(webUtils).getUser(anyString());
+
+
+        this.mockMvc.perform(post(urlForAddingSchedule)
+                .param("areaName", "TestRegistration").param("userName","user1").param("startDate","2019-10-24T14:50:31")
+                .param("endDate","2"))
+                .andExpect(status().is4xxClientError());
+    }
+
 }
